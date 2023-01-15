@@ -10,13 +10,27 @@ function showHello(divName: string, name: string) {
 // ===================================== //
 enum Category { JavaScript, CSS, HTML, TypeScript, Angular }
 
-type Book = {
+// type Book = {
+//     id: number;
+//     title: string;
+//     author: string;
+//     available: boolean;
+//     category: Category;
+// };
+
+interface Book {
     id: number;
     title: string;
     author: string;
     available: boolean;
     category: Category;
-};
+    pages?: number;
+    // markDamaged?: (reason: string) => void; // function type, option 1
+    // markDamaged?(reason: string): void; // function type, option 2
+    markDamaged?: DamageLogger; // function type, option 3
+
+}
+
 
 const getAllBooks = (): readonly Book[] => {
     const books = <const>[
@@ -116,7 +130,13 @@ function createCustomer(name: string, age?: number, city?: string): void {
 // createCustomer('Alex', 29);
 // createCustomer('Alex', 29, 'Kyiv');
 
-function getBookByID(id: number): Book {
+// function getBookByID(id: number): Book {
+//     const books = getAllBooks();
+//     return books.find(book => book.id === id);
+// }
+
+// using interface in arguments
+function getBookByID(id: Book['id']): Book | undefined {
     const books = getAllBooks();
     return books.find(book => book.id === id);
 }
@@ -187,3 +207,90 @@ function bookTitleTransform(book: any): string {
 
 // console.log(bookTitleTransform('good'));
 // console.log(bookTitleTransform(123));
+
+
+// Interfaces
+function printBook(book: Book): void {
+    console.log(`${book.title} by ${book.author}`);
+}
+
+const mySecondBook: Book = {
+    id: 5,
+    title: 'Colors, Backgrounds, and Gradients',
+    author: 'Eric A. Meyer',
+    available: true,
+    category: Category.CSS,
+    pages: 200,
+    // markDamaged(reason) {
+    //     console.log(`Damaged: ${reason}`);
+    // }, // two options of declaration
+    markDamaged: (reason: string) => console.log(`Damaged: ${reason}`)
+};
+
+// printBook(mySecondBook);
+// mySecondBook.markDamaged('missing back cover');
+
+// Interfaces + Function Types
+interface DamageLogger {
+    (data: string): void;
+}
+
+const logDamages: DamageLogger = (reason: string) => console.log(`Damaged: ${reason}`);
+// logDamages('missing back cover');
+
+// Extending Interfaces
+interface Person {
+    name: string;
+    email: string;
+}
+
+interface Author extends Person {
+    numBooksPublished: number;
+}
+
+interface Librarian extends Person {
+    department: string;
+    assistCustomer(custName: string, bookTitle: string): void;
+}
+
+const favoriteAuthor: Author = {
+    numBooksPublished: 10,
+    name: 'John Smith',
+    email: 'aaa@bbb.com',
+};
+
+const favoriteLibrarian: Librarian = {
+    department: 'fantasy',
+    assistCustomer(custName, bookTitle) {
+        console.log(`${custName} took ${bookTitle}`);
+    },
+    name: 'Barbara Strasisand',
+    email: 'aaa@ccc.com',
+};
+
+
+// optional Chaining
+const offer: any = {
+    book: {
+        title: 'Essential TypeScript',
+    },
+};
+
+// console.log(offer.magazine);
+// console.log(offer.magazine?.getTitle());
+// console.log(offer.book.getTitle?.());
+// console.log(offer.book.authors?.[0]);
+
+// keyof
+
+type BookProperties = keyof Book | 'isbn';
+
+function getProperty(book: Book, property: BookProperties): any {
+    const value = book[property];
+
+    return typeof value === 'function' ? value.name : value;
+}
+
+// console.log(getProperty(mySecondBook, 'title'));
+// console.log(getProperty(mySecondBook, 'markDamaged'));
+// console.log(getProperty(mySecondBook, 'isbn'));
