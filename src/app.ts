@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-redeclare */
 
 showHello('greeting', 'TypeScript');
@@ -136,7 +137,7 @@ function createCustomer(name: string, age?: number, city?: string): void {
 // }
 
 // using interface in arguments
-function getBookByID(id: Book['id']): Book | undefined {
+function getBookByID(id: Book['id']): BookOrUndefined {
     const books = getAllBooks();
     return books.find(book => book.id === id);
 }
@@ -294,3 +295,143 @@ function getProperty(book: Book, property: BookProperties): any {
 // console.log(getProperty(mySecondBook, 'title'));
 // console.log(getProperty(mySecondBook, 'markDamaged'));
 // console.log(getProperty(mySecondBook, 'isbn'));
+
+
+// Classes
+abstract class ReferenceItem {
+    // title: string;
+    // year: number;
+
+    // constructor(newTitle: string, newYear: number) {
+    //     console.log('Creating a new ReferenceItem...');
+    //     this.title = newTitle;
+    //     this.year = newYear;
+    // }
+
+    #id: number;
+
+    private _publisher: string;
+
+    static department: string = 'Fantasy';
+
+    constructor(
+        public title: string,
+        protected year: number,
+        id: number,
+    ) {
+        console.log('Creating a new ReferenceItem...');
+        this.#id = id;
+    }
+
+    printItem(): void {
+        console.log(`${this.title} was published in ${this.year} by ${ReferenceItem.department}`);
+        console.log(Object.getPrototypeOf(this).constructor.department);
+        // same meaning
+    }
+
+    abstract printCitation(): void;
+
+    get publisher(): string {
+        return this._publisher.toUpperCase();
+    }
+
+    set publisher(newPublisher: string) {
+        this._publisher = newPublisher;
+    }
+
+    getId(): number {
+        return this.#id;
+    }
+}
+
+// const ref = new ReferenceItem('Learn Javascript', 2022, 45);
+// ref.printItem();
+// ref.publisher = 'Ababagalamaga';
+// console.log(ref.publisher);
+// console.log(ref);
+// console.log(ref.getId());
+
+class Encyclopedia extends ReferenceItem {
+
+    constructor(
+        title: string,
+        year: number,
+        id: number,
+        public edition: number
+    ) {
+        super(title, year, id);
+    }
+
+    override printItem(): void {
+        super.printItem();
+        console.log(`Edition: ${this.edition}(${this.year})`);
+    }
+
+    printCitation(): void {
+        console.log(`${this.title} was published in ${this.year}`);
+    }
+}
+
+// const refBook: Encyclopedia = new Encyclopedia('Learn Ts', 2021, 22, 2);
+// refBook.printItem();
+
+const refBook: Encyclopedia = new Encyclopedia('Learn Ts', 2021, 22, 2);
+// refBook.printCitation();
+
+// class UniversityLibrarian implements Librarian {
+//     constructor(
+//         public department: string,
+//         public name: string,
+//         public email: string,
+//     ) {
+
+//     }
+
+//     assistCustomer(custName: string, bookTitle: string): void {
+//         console.log(`${this.name} is assisting ${custName} with the book ${bookTitle}`);
+//     }
+// }
+
+// const favoriteLibrarian2: Librarian = new UniversityLibrarian('research', 'John Smith', 'bbb@bbb,com');
+// const name2 = favoriteLibrarian2.assistCustomer('Helen', 'Star Wars');
+// console.log(name2);
+
+class UniversityLibrarian implements Librarian {
+
+    department: string;
+    name: string;
+    email: string;
+
+    assistCustomer(custName: string, bookTitle: string): void {
+        console.log(`${this.name} is assisting ${custName} with the book ${bookTitle}`);
+    }
+}
+
+const favoriteLibrarian2: Librarian = new UniversityLibrarian();
+favoriteLibrarian2.name = 'Helen';
+// favoriteLibrarian2.assistCustomer('Alex', 'Star Wars');
+
+type PersonBook = Person & Book;
+
+const personBook: PersonBook = {
+    name: 'John',
+    author: 'Cheis',
+    available: true,
+    category: Category.TypeScript,
+    email: 'aaa@ccc.com',
+    id: 456,
+    title: 'Learn Ts',
+};
+
+type BookOrUndefined = Book | undefined;
+
+function setDefaultConfig(options: TOptions) {
+    options.duration ??= 100;
+    options.speed ??= 60;
+    return options;
+}
+
+interface TOptions {
+    duration?: number;
+    speed?: number;
+};
