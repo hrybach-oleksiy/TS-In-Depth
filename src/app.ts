@@ -1,9 +1,9 @@
 
 import { Category } from './enums';
-import { Book, Logger, Author, Librarian } from './interfaces';
-import { UL, ReferenceItem, RefBook } from './classes';
-import { PersonBook } from './types';
-import { createCustomerID, getTitles, сheckoutBooks, printRefBook, getAllBooks } from './functions';
+import { Book, Logger, Author, Librarian, Magazine } from './interfaces';
+import { UL, ReferenceItem, RefBook, Shelf } from './classes';
+import { PersonBook, BookRequiredFields, UpdatedBook, СreateCustomerFunctionType } from './types';
+import { createCustomerID, getTitles, сheckoutBooks, printRefBook, getAllBooks, purge, getObjectProperty, createCustomer } from './functions';
 import { Library } from './classes/library';
 // import type { Library } from './classes/library';
 
@@ -170,3 +170,62 @@ let library: Library = {
 };
 
 // console.log(library);
+
+
+// Generics
+const inventory: Book[] = [
+    { id: 10, title: 'The C Programming Language', author: 'K & R', available: true, category: Category.Software },
+    { id: 11, title: 'Code Complete', author: 'Steve McConnell', available: true, category: Category.Software },
+    { id: 12, title: '8-Bit Graphics with Cobol', author: 'A. B.', available: true, category: Category.Software },
+    { id: 13, title: 'Cool autoexec.bat Scripts!', author: 'C. D.', available: true, category: Category.Software }
+];
+
+// const result = purge<number>([1, 2, 3, 4, 5, 6]);
+// const result2 = purge(inventory);
+// console.log(result);
+// console.log(result2);
+
+// const bookShelf: Shelf<Book> = new Shelf<Book>();
+const bookShelf = new Shelf<Book>();
+inventory.forEach(book => bookShelf.add(book));
+// console.log(bookShelf);
+const firstBookTitle = bookShelf.getFirst().title;
+// console.log(firstBookTitle);
+
+const magazines: Magazine[] = [
+    { title: 'Programming Language Monthly', publisher: 'Code Mags' },
+    { title: 'Literary Fiction Quarterly', publisher: 'College Press' },
+    { title: 'Five Points', publisher: 'GSU' }
+];
+
+const magazineShelf = new Shelf<Magazine>();
+magazines.forEach(magazine => magazineShelf.add(magazine));
+// console.log(magazineShelf);
+const firstMagazine = magazineShelf.getFirst();
+// console.log(firstMagazine);
+
+// console.log(magazineShelf.printTitles());
+// console.log(magazineShelf.find('Five Points'));
+
+// console.log(getObjectProperty(magazines[0], 'title'));
+
+
+// Utilities
+const bookRequiredFields: BookRequiredFields = {
+    author: 'Helen',
+    available: true,
+    category: Category.TypeScript,
+    id: 2,
+    markDamaged: null,
+    pages: 350,
+    title: 'Learn Typescript'
+};
+
+const updatedBook: UpdatedBook = {
+    id: 5,
+    pages: 420
+};
+
+let params: Parameters<СreateCustomerFunctionType>;
+params = ['Helen', 38, 'London'];
+// createCustomer(...params);

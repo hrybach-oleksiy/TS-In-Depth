@@ -45,5 +45,14 @@ interface TOptions {
     speed?: number;
 }
 
+interface Magazine {
+    title: string;
+    publisher: string;
+}
 
-export { Book, DamageLogger as Logger, Person, Author, Librarian, TOptions };
+interface ShelfItem {
+    title: string;
+}
+
+
+export { Book, DamageLogger as Logger, Person, Author, Librarian, TOptions, Magazine, ShelfItem };

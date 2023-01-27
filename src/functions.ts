@@ -182,6 +182,12 @@ export function getProperty(book: Book, property: BookProperties): any {
 // console.log(getProperty(mySecondBook, 'markDamaged'));
 // console.log(getProperty(mySecondBook, 'isbn'));
 
+export function getObjectProperty<TObject, TKey extends keyof TObject>(object: TObject, prop: TKey): TObject[TKey] | string {
+    const value = object[prop];
+
+    return typeof value === 'function' ? value.name : value;
+}
+
 export function setDefaultConfig(options: TOptions) {
     options.duration ??= 100;
     options.speed ??= 60;
@@ -197,6 +203,12 @@ export function assertRefBookInstance(condition: any): asserts condition {
 export function printRefBook(data: any): void {
     assertRefBookInstance(data instanceof RefBook);
     data.printItem();
+}
+
+
+// Generics
+export function purge<T>(inventory: Array<T>): T[] { // the same Array<T> and T[]
+    return inventory.slice(2);
 }
 
 export { getAllBooks, logFirstAvailable, getBookTitlesByCategory, logBookTitles, getBookAuthorByIndex, calcTotalPages };
